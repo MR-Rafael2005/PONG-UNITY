@@ -11,9 +11,16 @@ public class GameManager : MonoBehaviour
     private GameObject ball;
     private GameObject bar1;
     private GameObject bar2;
+    public int[] resolutionsX;
+    public int[] resolutionY;
     public int Score1 = 0;
     public int Score2 = 0;
     private float timeMusic;
+    public int camRefX =  640;
+    public int camRefY = 360;
+    public int PPURef = 36;
+    public int pointsToWin = 5;
+    public float volumeDef = 0.4f;
 
     private void Awake()
     {
@@ -30,10 +37,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if (GameController.gameController != null)
-        {
-            gameC = GameController.gameController;
-        }
         audioSource = GetComponent<AudioSource>();
         ball = GameObject.Find("Ball");
         bar1 = GameObject.Find("Bar1");
@@ -46,6 +49,16 @@ public class GameManager : MonoBehaviour
         {
             Application.Quit();
         }
+
+        if (GameController.gameController != null && gameC == null)
+        {
+            gameC = GameController.gameController;
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            UnMute();
+        }
     }
 
     public void pointScore1()
@@ -53,7 +66,7 @@ public class GameManager : MonoBehaviour
         gameC = GameController.gameController;
         Score1++;
         RestartMatch();
-        if (Score1 < 5)
+        if (Score1 < pointsToWin)
         {
             gameC.pointed();
         }
@@ -68,7 +81,7 @@ public class GameManager : MonoBehaviour
         gameC = GameController.gameController;
         Score2++;
         RestartMatch();
-        if(Score2 < 5)
+        if(Score2 < pointsToWin)
         {
             gameC.pointed();
         } 
@@ -114,7 +127,7 @@ public class GameManager : MonoBehaviour
         {
             audioSource.clip = musics[1];
         }
-
+        audioSource.loop = true;
         audioSource.Play();
     }
 
@@ -131,5 +144,24 @@ public class GameManager : MonoBehaviour
     public void stopPerMusic() 
     {
         audioSource.Stop();
+    }
+
+    public void changeRes(int X, int Y)
+    {
+        PPURef = Y / 10;
+        camRefX = X;
+        camRefY = Y;
+    }
+
+    public void UnMute()
+    {
+        if (AudioListener.volume != 0)
+        {
+            AudioListener.volume = 0;
+        }
+        else
+        {
+            AudioListener.volume = volumeDef;
+        }
     }
 }

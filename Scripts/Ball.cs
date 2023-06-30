@@ -40,12 +40,15 @@ public class Ball : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         gameM = GameManager.gameManager;
 
+        audioSource.clip = hit;
+
         XMul = Random.Range(0, 2) < 2 ? -1 : 1;
         YMul = Random.Range(0, 2) < 2 ? -1 : 1;
     }
 
     void FixedUpdate()
     {
+        audioSource.panStereo = transform.position.x > 0 ? 1 : -1;
         Move();
         CheckYColision();
         CheckXColision();
@@ -89,12 +92,12 @@ public class Ball : MonoBehaviour
             {
                 if((transform.position.x < 0  && XMul < 0 && disY1 <= 0) || (transform.position.x > 0 && XMul > 0 && disY2 <= 0))
                 {
+                    playHit();
                     XMul *= -1;
                     ballXSpeed += 0.225f;
-                    playHit();
                     if ((disY1 >= -0.3f && transform.position.x < 0) || (disY2 >= -0.3f && transform.position.x > 0))
                     {
-                        if(((transform.position.y < Bar1.transform.position.y && YMul > 0) || (transform.position.y > Bar1.transform.position.y && YMul < 0)) || ((transform.position.y < Bar2.transform.position.y && YMul > 0) || (transform.position.y > Bar2.transform.position.y && YMul < 0)))
+                        if(((transform.position.y < Bar1.transform.position.y && YMul > 0 && transform.position.x < 0) || (transform.position.y > Bar1.transform.position.y && YMul < 0 && transform.position.x < 0)) || ((transform.position.y < Bar2.transform.position.y && YMul > 0 && transform.position.x > 0) || (transform.position.y > Bar2.transform.position.y && YMul < 0 && transform.position.x > 0)))
                         {
                             YMul *= -1;
                         }
@@ -127,8 +130,6 @@ public class Ball : MonoBehaviour
     
     void playHit()
     {
-        audioSource.panStereo = transform.position.x > 0 ? 1 : -1;
-        audioSource.clip = hit;
         audioSource.PlayOneShot(audioSource.clip);
     }
 

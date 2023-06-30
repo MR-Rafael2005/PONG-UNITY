@@ -5,26 +5,41 @@ using UnityEngine.SceneManagement;
 
 public class TitleScreen : MonoBehaviour
 {
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         if (Input.GetButtonDown("Start"))
         {
             LoadGameL();
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            loadOptions();
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
     }
 
+    public void loadOptions()
+    {
+        StartCoroutine(loadOp());
+    }
+
     public void LoadGameL()
     {
         StartCoroutine(load());
+    }
+
+    IEnumerator loadOp()
+    {
+        var loaded = SceneManager.LoadSceneAsync("Options");
+        while (loaded.isDone == false)
+        {
+            yield return null;
+        }
     }
 
     IEnumerator load()
